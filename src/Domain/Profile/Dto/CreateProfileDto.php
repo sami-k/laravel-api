@@ -9,7 +9,7 @@ readonly class CreateProfileDto
     public function __construct(
         public string $nom,
         public string $prenom,
-        public ?UploadedFile $image,
+        public UploadedFile|string|null $image,
         public string $statut,
         public int $administratorId,
     ) {}
