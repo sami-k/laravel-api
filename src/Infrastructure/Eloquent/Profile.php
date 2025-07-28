@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Database\Factories\ProfileFactory;
 
 class Profile extends Model
 {
@@ -30,6 +31,14 @@ class Profile extends Model
     public const STATUT_INACTIF = 'inactif';
     public const STATUT_EN_ATTENTE = 'en_attente';
     public const STATUT_ACTIF = 'actif';
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return ProfileFactory::new();
+    }
 
     public function administrator(): BelongsTo
     {
