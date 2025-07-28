@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Actions\Administrator\AuthenticateAdministratorAction;
+use Illuminate\Routing\Controller;
 use Infrastructure\Http\Requests\LoginRequest;
 use Domain\Administrator\Exceptions\InvalidCredentialsException;
 use Illuminate\Http\JsonResponse;

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
 use App\Actions\Comment\CreateCommentAction;
+use Illuminate\Routing\Controller;
 use Infrastructure\Http\Requests\CreateCommentRequest;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
 use Domain\Profile\Exceptions\ProfileNotFoundException;

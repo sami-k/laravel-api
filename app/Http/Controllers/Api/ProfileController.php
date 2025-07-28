@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
 use App\Actions\Profile\CreateProfileAction;
 use App\Actions\Profile\UpdateProfileAction;
 use App\Actions\Profile\GetActiveProfilesAction;
+use Illuminate\Routing\Controller;
 use Infrastructure\Http\Requests\CreateProfileRequest;
 use Infrastructure\Http\Requests\UpdateProfileRequest;
 use Domain\Profile\Exceptions\ProfileNotFoundException;
