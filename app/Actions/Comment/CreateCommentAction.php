@@ -18,6 +18,11 @@ class CreateCommentAction
 
     /**
      * Execute la création d'un commentaire
+     *
+     * @param array<string, mixed> $data
+     * @throws CommentAlreadyExistsException
+     * @throws ProfileNotFoundException
+     * @throws \RuntimeException
      */
     public function execute(array $data, int $administratorId): int
     {

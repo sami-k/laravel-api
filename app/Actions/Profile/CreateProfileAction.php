@@ -17,6 +17,10 @@ class CreateProfileAction
 
     /**
      * Execute la création d'un profil
+     *
+     * @param array<string, mixed> $data
+     * @throws InvalidImageException
+     * @throws \RuntimeException
      */
     public function execute(array $data, int $administratorId): int
     {

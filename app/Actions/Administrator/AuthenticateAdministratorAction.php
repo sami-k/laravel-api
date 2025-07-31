@@ -17,7 +17,12 @@ class AuthenticateAdministratorAction
     ) {}
 
     /**
-     * Execute l'authentification d'un administrateur
+     * Execute l'authentification d'un admin
+     *
+     * @param array<string, string> $credentials
+     * @return array<string, mixed>
+     * @throws InvalidCredentialsException
+     * @throws \RuntimeException
      */
     public function execute(array $credentials): array
     {

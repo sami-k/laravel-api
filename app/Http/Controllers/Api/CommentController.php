@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Actions\Comment\CreateCommentAction;
+use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Illuminate\Routing\Controller;
 use Infrastructure\Http\Requests\CreateCommentRequest;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
@@ -16,7 +17,8 @@ class CommentController extends Controller
 {
     public function __construct(
         private readonly CreateCommentAction $createAction,
-        private readonly CommentService $commentService
+        private readonly CommentService $commentService,
+        private readonly CommentRepositoryInterface $commentRepository
     ) {}
 
     /**
@@ -41,13 +43,13 @@ class CommentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des commentaires',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
 
     /**
-     * Crée un nouveau commentaire (protégé par authentification)
+     * Crée un nouveau commentaire
      *
      * @param CreateCommentRequest $request
      * @return JsonResponse
@@ -56,8 +58,13 @@ class CommentController extends Controller
     {
         try {
             $data = $request->validated();
-            $administratorId = $request->user()->id;
+            $user = $request->user();
 
+            if ($user === null) {
+                throw new \RuntimeException('User not authenticated');
+            }
+
+            $administratorId = $user->id;
             $commentId = $this->createAction->execute($data, $administratorId);
 
             return response()->json([
@@ -88,7 +95,7 @@ class CommentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la création du commentaire',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -102,9 +109,9 @@ class CommentController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $comment = app(\Domain\Comment\Repositories\CommentRepositoryInterface::class)->findById($id);
+            $comment =  $this->commentRepository->findById($id);
 
-            if (!$comment) {
+            if ($comment === null) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Commentaire non trouvé'
@@ -121,13 +128,13 @@ class CommentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du commentaire',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
 
     /**
-     * Vérifie si un administrateur peut commenter un profil
+     * check si un administrateur peut commenter un profil
      *
      * @param Request $request
      * @param int $profileId
@@ -136,7 +143,12 @@ class CommentController extends Controller
     public function canComment(Request $request, int $profileId): JsonResponse
     {
         try {
-            $administratorId = $request->user()->id;
+            $user = $request->user();
+            if ($user === null) {
+                throw new \RuntimeException('User not authenticated');
+            }
+
+            $administratorId = $user->id;
             $canComment = $this->commentService->canComment($administratorId, $profileId);
 
             return response()->json([
@@ -152,7 +164,7 @@ class CommentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la vérification',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }

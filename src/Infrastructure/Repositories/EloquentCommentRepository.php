@@ -8,16 +8,12 @@ use Infrastructure\Eloquent\Comment;
 
 class EloquentCommentRepository implements CommentRepositoryInterface
 {
-    public function __construct(
-        private readonly Comment $model
-    ) {}
-
     /**
      * Trouve un commentaire par son ID
      */
     public function findById(int $id): ?object
     {
-        return $this->model->with(['administrator', 'profile'])->find($id);
+        return Comment::query()->with(['administrator', 'profile'])->find($id);
     }
 
     /**
@@ -25,8 +21,7 @@ class EloquentCommentRepository implements CommentRepositoryInterface
      */
     public function create(CreateCommentDto $dto): int
     {
-        $comment = $this->model->create($dto->toArray());
-
+        $comment = Comment::query()->create($dto->toArray());
         return $comment->id;
     }
 
@@ -35,9 +30,9 @@ class EloquentCommentRepository implements CommentRepositoryInterface
      */
     public function delete(int $id): bool
     {
-        $comment = $this->model->find($id);
+        $comment = Comment::query()->find($id);
 
-        if (!$comment) {
+        if ($comment === null) {
             return false;
         }
 
@@ -46,12 +41,15 @@ class EloquentCommentRepository implements CommentRepositoryInterface
 
     /**
      * Récupère tous les commentaires d'un profil
+     *
+     * @return array<int, mixed>
      */
     public function findByProfileId(int $profileId): array
     {
-        return $this->model
+        return Comment::query()
             ->where('profile_id', $profileId)
             ->with(['administrator:id,name,email'])
+            ->getQuery()
             ->orderBy('created_at', 'desc')
             ->get()
             ->toArray();
@@ -59,12 +57,15 @@ class EloquentCommentRepository implements CommentRepositoryInterface
 
     /**
      * Récupère tous les commentaires d'un administrateur
+     *
+     * @return array<int, mixed>
      */
     public function findByAdministratorId(int $administratorId): array
     {
-        return $this->model
+        return Comment::query()
             ->where('administrator_id', $administratorId)
             ->with(['profile:id,nom,prenom'])
+            ->getQuery()
             ->orderBy('created_at', 'desc')
             ->get()
             ->toArray();
@@ -75,9 +76,10 @@ class EloquentCommentRepository implements CommentRepositoryInterface
      */
     public function hasCommentedProfile(int $administratorId, int $profileId): bool
     {
-        return $this->model
+        return Comment::query()
             ->where('administrator_id', $administratorId)
             ->where('profile_id', $profileId)
+            ->getQuery()
             ->exists();
     }
 
@@ -86,7 +88,7 @@ class EloquentCommentRepository implements CommentRepositoryInterface
      */
     public function findByAdministratorAndProfile(int $administratorId, int $profileId): ?object
     {
-        return $this->model
+        return Comment::query()
             ->where('administrator_id', $administratorId)
             ->where('profile_id', $profileId)
             ->with(['administrator', 'profile'])

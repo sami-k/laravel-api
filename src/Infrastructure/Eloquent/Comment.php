@@ -28,7 +28,7 @@ class Comment extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory()
+    protected static function newFactory(): commentFactory
     {
         return CommentFactory::new();
     }

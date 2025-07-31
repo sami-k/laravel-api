@@ -1,0 +1,26 @@
+includes:
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    level: max  # Maximum comme ton autre projet
+
+    tmpDir: var/cache/phpstan-domain
+
+    # Analyser SEULEMENT le Domain
+    paths:
+        - src/Domain/
+
+    # Domain = zéro tolérance (comme ton approche stricte)
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+    reportUnmatchedIgnoredErrors: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+    checkImplicitMixed: true
+    treatPhpDocTypesAsCertain: true
+    checkDynamicProperties: true
+
+    # AUCUNE exception pour le Domain
+    ignoreErrors: []

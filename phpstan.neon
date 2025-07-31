@@ -1,0 +1,45 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    level: 7
+
+    # Dossier cache
+    tmpDir: var/cache/phpstan
+
+    # Chemins à analyser
+    paths:
+        #---- Application Layer
+        - app/Actions
+        - app/Http/Controllers/Api
+        - app/Http/Controllers/Auth
+        - app/Providers
+
+        #---- Infrastructure Layer
+        - src/Infrastructure
+
+        #---- Database
+        - database/factories
+        - database/seeders
+
+        #---- Routes
+        - routes/api.php
+
+    # Chemins à exclure
+    excludePaths:
+        #---- Generated files
+        - database/migrations/
+        - bootstrap/cache/
+        - storage/
+        - vendor/
+
+        #---- Tests (analysés séparément si besoin)
+        - tests/
+
+    # Erreurs à ignorer
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics

@@ -5,7 +5,7 @@ namespace App\Actions\Profile;
 use Domain\Profile\Services\ProfileService;
 
 /**
- * Action pour récupérer les profils actifs (endpoint public)
+ * Action de récupération des profils actifs pour l'endpoint public
  */
 class GetActiveProfilesAction
 {
@@ -15,6 +15,10 @@ class GetActiveProfilesAction
 
     /**
      * Execute la récupération des profils actifs
+     * Filtre le champ 'statut' pour la sécurité
+     *
+     * @return array<int, array<string, mixed>>
+     * @throws \RuntimeException
      */
     public function execute(): array
     {

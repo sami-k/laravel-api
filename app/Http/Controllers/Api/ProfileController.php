@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Profile\CreateProfileAction;
 use App\Actions\Profile\UpdateProfileAction;
 use App\Actions\Profile\GetActiveProfilesAction;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Illuminate\Routing\Controller;
 use Infrastructure\Http\Requests\CreateProfileRequest;
 use Infrastructure\Http\Requests\UpdateProfileRequest;
@@ -21,7 +22,8 @@ class ProfileController extends Controller
         private readonly CreateProfileAction $createAction,
         private readonly UpdateProfileAction $updateAction,
         private readonly GetActiveProfilesAction $getActiveProfilesAction,
-        private readonly ProfileService $profileService
+        private readonly ProfileService $profileService,
+        private readonly ProfileRepositoryInterface $profileRepository
     ) {}
 
     /**
@@ -45,7 +47,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des profils',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -60,8 +62,13 @@ class ProfileController extends Controller
     {
         try {
             $data = $request->validated();
-            $administratorId = $request->user()->id;
+            $user = $request->user();
 
+            if ($user === null) {
+                throw new \RuntimeException('User not authenticated');
+            }
+
+            $administratorId = $user->id;
             $profileId = $this->createAction->execute($data, $administratorId);
 
             return response()->json([
@@ -84,7 +91,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la création du profil',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -98,10 +105,8 @@ class ProfileController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            // Utilisation directe du service pour récupérer tous les détails
-            $profile = app(\Domain\Profile\Repositories\ProfileRepositoryInterface::class)->findById($id);
-
-            if (!$profile) {
+            $profile = $this->profileRepository->findById($id);
+            if ($profile === null) {
                 throw new ProfileNotFoundException("Profile with ID {$id} not found");
             }
 
@@ -122,13 +127,13 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du profil',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
 
     /**
-     * Met à jour un profil (protégé par authentification)
+     * Met à jour un profil
      *
      * @param UpdateProfileRequest $request
      * @param int $id
@@ -168,7 +173,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la mise à jour du profil',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -204,7 +209,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la suppression du profil',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
