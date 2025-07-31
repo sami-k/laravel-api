@@ -35,7 +35,7 @@ class Administrator extends Authenticatable
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory()
+    protected static function newFactory() :AdministratorFactory
     {
         return AdministratorFactory::new();
     }

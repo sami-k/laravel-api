@@ -44,7 +44,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de l\'authentification',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -60,9 +60,8 @@ class AuthController extends Controller
         try {
             $user = $request->user();
 
-            if ($user) {
-                // Révoque tous les tokens de l'utilisateur
-                $user->tokens()->delete();
+            if ($user !== null) {
+                $user->currentAccessToken()->delete();
             }
 
             return response()->json([
@@ -74,7 +73,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la déconnexion',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }
@@ -104,7 +103,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des informations',
-                'error' => config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
             ], 500);
         }
     }

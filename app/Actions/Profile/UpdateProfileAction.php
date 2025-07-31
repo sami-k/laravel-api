@@ -20,13 +20,18 @@ class UpdateProfileAction
 
     /**
      * Execute la mise à jour d'un profil
+     *
+     * @param array<string, mixed> $data
+     * @throws ProfileNotFoundException
+     * @throws InvalidImageException
+     * @throws \RuntimeException
      */
     public function execute(int $profileId, array $data): bool
     {
         try {
             $profile = $this->profileRepository->findById($profileId);
 
-            if (!$profile) {
+            if ($profile === null) {
                 throw new ProfileNotFoundException("Profile with ID {$profileId} not found");
             }
 

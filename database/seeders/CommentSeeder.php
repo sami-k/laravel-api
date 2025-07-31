@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
+use Infrastructure\Eloquent\Administrator;
 use Infrastructure\Eloquent\Comment;
 use Infrastructure\Eloquent\Profile;
-use Infrastructure\Eloquent\Administrator;
-use Illuminate\Database\Seeder;
 
 class CommentSeeder extends Seeder
 {
@@ -18,7 +18,7 @@ class CommentSeeder extends Seeder
         $administrators = Administrator::all();
 
         if ($profiles->isEmpty() || $administrators->isEmpty()) {
-            $this->command->error('❌ Aucun profil ou administrateur trouvé. Exécutez les autres seeders d\'abord.');
+            $this->command->error('Aucun profil ou administrateur trouvé. Exécutez les autres seeders d\'abord.');
             return;
         }
 
@@ -38,9 +38,10 @@ class CommentSeeder extends Seeder
             $selectedAdmins = $administrators->random(min($commentCount, $administrators->count()));
 
             foreach ($selectedAdmins as $admin) {
-                // Vérifier qu'il n'y a pas déjà un commentaire de cet admin sur ce profil
-                $existingComment = Comment::where('administrator_id', $admin->id)
+                $existingComment = Comment::query()
+                    ->where('administrator_id', $admin->id)
                     ->where('profile_id', $profile->id)
+                    ->getQuery()
                     ->exists();
 
                 if (!$existingComment) {
@@ -60,13 +61,15 @@ class CommentSeeder extends Seeder
         Comment::factory(5)->short()->create();
         Comment::factory(3)->long()->create();
 
-        $this->command->info('✅ Commentaires créés avec succès !');
-        $this->command->info('📊 Total: ' . Comment::count() . ' commentaires');
-        $this->command->info('✅ Nouveaux: ' . ($createdComments + 8));
-        $this->command->info('⏭️ Ignorés (doublons): ' . $skippedComments);
+        $this->command->info('Commentaires créés avec succès !');
+        $this->command->info('Total: ' . Comment::query()->getQuery()->count() . ' commentaires');
+        $this->command->info('Ignorés (doublons): ' . $skippedComments);
 
-        // Statistiques par profil
-        $profilesWithComments = Profile::has('comments')->count();
-        $this->command->info('💬 Profils avec commentaires: ' . $profilesWithComments . '/' . $profiles->count());
+        // ✅ LIGNE 68 - Correction has()->count() avec getQuery()
+        $profilesWithComments = Profile::query()
+            ->has('comments')
+            ->getQuery()
+            ->count();
+        $this->command->info('Profils avec commentaires: ' . $profilesWithComments . '/' . $profiles->count());
     }
 }

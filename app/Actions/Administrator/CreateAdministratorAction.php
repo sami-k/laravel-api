@@ -17,6 +17,10 @@ class CreateAdministratorAction
 
     /**
      * Execute la création d'un administrateur
+     *
+     * @param array<string, string> $data
+     * @throws AdministratorAlreadyExistsException
+     * @throws \RuntimeException
      */
     public function execute(array $data): int
     {

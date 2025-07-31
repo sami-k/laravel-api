@@ -8,16 +8,12 @@ use Infrastructure\Eloquent\Administrator;
 
 class EloquentAdministratorRepository implements AdministratorRepositoryInterface
 {
-    public function __construct(
-        private readonly Administrator $model
-    ) {}
-
     /**
      * Trouve un administrateur par son ID
      */
     public function findById(int $id): ?object
     {
-        return $this->model->find($id);
+        return Administrator::query()->find($id);
     }
 
     /**
@@ -25,7 +21,7 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
      */
     public function findByEmail(string $email): ?object
     {
-        return $this->model->where('email', $email)->first();
+        return Administrator::query()->where('email', $email)->first();
     }
 
     /**
@@ -33,7 +29,10 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
      */
     public function existsByEmail(string $email): bool
     {
-        return $this->model->where('email', $email)->exists();
+        return Administrator::query()
+            ->where('email', $email)
+            ->getQuery()
+            ->exists();
     }
 
     /**
@@ -41,7 +40,7 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
      */
     public function create(CreateAdministratorDto $dto): int
     {
-        $administrator = $this->model->create($dto->toArray());
+        $administrator = Administrator::query()->create($dto->toArray());
 
         return $administrator->id;
     }
@@ -51,9 +50,9 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
      */
     public function update(int $id, array $data): bool
     {
-        $administrator = $this->model->find($id);
+        $administrator = Administrator::query()->find($id);
 
-        if (!$administrator) {
+        if ($administrator === null) {
             return false;
         }
 
@@ -65,9 +64,9 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
      */
     public function delete(int $id): bool
     {
-        $administrator = $this->model->find($id);
+        $administrator = Administrator::query()->find($id);
 
-        if (!$administrator) {
+        if ($administrator === null) {
             return false;
         }
 
@@ -76,9 +75,11 @@ class EloquentAdministratorRepository implements AdministratorRepositoryInterfac
 
     /**
      * Récupère tous les administrateurs
+     *
+     * @return array<int, mixed>
      */
     public function findAll(): array
     {
-        return $this->model->all()->toArray();
+        return Administrator::query()->get()->toArray();
     }
 }

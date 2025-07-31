@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Database\Factories\ProfileFactory;
+use Illuminate\Database\Eloquent\Builder;
 
 class Profile extends Model
 {
@@ -35,7 +36,7 @@ class Profile extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory()
+    protected static function newFactory(): ProfileFactory
     {
         return ProfileFactory::new();
     }
@@ -50,7 +51,7 @@ class Profile extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('statut', self::STATUT_ACTIF);
     }

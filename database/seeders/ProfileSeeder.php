@@ -16,11 +16,11 @@ class ProfileSeeder extends Seeder
         $administrators = Administrator::all();
 
         if ($administrators->isEmpty()) {
-            $this->command->error('❌ Aucun administrateur trouvé. Exécutez AdministratorSeeder d\'abord.');
+            $this->command->error('Aucun administrateur trouvé. Exécutez AdministratorSeeder d\'abord.');
             return;
         }
 
-        // Profils actifs (visibles publiquement)
+        // Profils actifs
         Profile::factory(8)
             ->active()
             ->create([
@@ -41,7 +41,7 @@ class ProfileSeeder extends Seeder
                 'administrator_id' => $administrators->random()->id
             ]);
 
-        // Profils avec images (simulation)
+        // Profils avec images
         Profile::factory(4)
             ->active()
             ->withImage()
@@ -56,10 +56,17 @@ class ProfileSeeder extends Seeder
             ->forAdministrator($firstAdmin)
             ->create();
 
-        $this->command->info('✅ Profils créés avec succès !');
-        $this->command->info('📊 Total: ' . Profile::count() . ' profils');
-        $this->command->info('🟢 Actifs: ' . Profile::where('statut', 'actif')->count());
-        $this->command->info('🟡 En attente: ' . Profile::where('statut', 'en_attente')->count());
-        $this->command->info('🔴 Inactifs: ' . Profile::where('statut', 'inactif')->count());
+        $this->command->info('Profils créés avec succès !');
+
+        // ✅ LIGNES 61-64 - Corrections count() avec getQuery()
+        $totalProfiles = Profile::query()->getQuery()->count();
+        $activeProfiles = Profile::query()->where('statut', 'actif')->getQuery()->count();
+        $pendingProfiles = Profile::query()->where('statut', 'en_attente')->getQuery()->count();
+        $inactiveProfiles = Profile::query()->where('statut', 'inactif')->getQuery()->count();
+
+        $this->command->info('Total: ' . $totalProfiles . ' profils');
+        $this->command->info('Actifs: ' . $activeProfiles);
+        $this->command->info('En attente: ' . $pendingProfiles);
+        $this->command->info('Inactifs: ' . $inactiveProfiles);
     }
 }
