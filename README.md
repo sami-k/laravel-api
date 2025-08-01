@@ -321,14 +321,10 @@ php artisan tinker
 # Puis : App\Models\Profile::count()
 ```
 
-## 📄 Licence
-
-Ce projet est développé dans le cadre d'un challenge technique.
-
 ## 👥 Contribution
 
-Projet de démonstration - Développé avec une architecture DDD moderne et des bonnes pratiques Laravel.
+Projet de démonstration - Développé avec une architecture DDD dans le cadre d'un challenge technique.
 
 ---
 
-**Développé avec ❤️ et Laravel 12 + DDD**
+**Développé avec Laravel 12 + DDD**
