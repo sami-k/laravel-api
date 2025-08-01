@@ -241,8 +241,6 @@ php artisan test tests/Unit/
 # Tests d'intégration (Controllers)
 php artisan test tests/Feature/
 
-# Tests avec couverture
-php artisan test --coverage
 ```
 
 ### Comptes de test
