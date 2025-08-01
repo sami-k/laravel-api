@@ -3,8 +3,8 @@
 namespace App\Actions\Comment;
 
 use Domain\Comment\Dto\CreateCommentDto;
-use Domain\Comment\Services\CommentService;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
+use Domain\Comment\Services\CommentService;
 use Domain\Profile\Exceptions\ProfileNotFoundException;
 
 /**
@@ -19,7 +19,8 @@ class CreateCommentAction
     /**
      * Execute la création d'un commentaire
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
+     *
      * @throws CommentAlreadyExistsException
      * @throws ProfileNotFoundException
      * @throws \RuntimeException
@@ -37,7 +38,7 @@ class CreateCommentAction
         } catch (CommentAlreadyExistsException|ProfileNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new \RuntimeException('Comment creation failed: ' . $e->getMessage());
+            throw new \RuntimeException('Comment creation failed: '.$e->getMessage());
         }
     }
 }

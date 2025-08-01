@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use Infrastructure\Eloquent\Profile;
-use Infrastructure\Eloquent\Administrator;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Infrastructure\Eloquent\Administrator;
+use Infrastructure\Eloquent\Profile;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Infrastructure\Eloquent\Profile>
@@ -30,7 +30,7 @@ class ProfileFactory extends Factory
             'statut' => $this->faker->randomElement([
                 Profile::STATUT_INACTIF,
                 Profile::STATUT_EN_ATTENTE,
-                Profile::STATUT_ACTIF
+                Profile::STATUT_ACTIF,
             ]),
             'administrator_id' => Administrator::factory(),
         ];
@@ -82,7 +82,7 @@ class ProfileFactory extends Factory
     public function withImage(): static
     {
         return $this->state(fn (array $attributes) => [
-            'image' => 'profiles/' . $this->faker->uuid() . '.jpg',
+            'image' => 'profiles/'.$this->faker->uuid().'.jpg',
         ]);
     }
 }

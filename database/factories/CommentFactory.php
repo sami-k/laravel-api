@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Infrastructure\Eloquent\Comment;
-use Infrastructure\Eloquent\Administrator;
-use Infrastructure\Eloquent\Profile;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Infrastructure\Eloquent\Administrator;
+use Infrastructure\Eloquent\Comment;
+use Infrastructure\Eloquent\Profile;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Infrastructure\Eloquent\Comment>

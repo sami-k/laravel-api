@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-
 use App\Actions\Comment\CreateCommentAction;
-use Domain\Comment\Repositories\CommentRepositoryInterface;
-use Illuminate\Routing\Controller;
-use Infrastructure\Http\Requests\CreateCommentRequest;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
-use Domain\Profile\Exceptions\ProfileNotFoundException;
+use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Domain\Comment\Services\CommentService;
+use Domain\Profile\Exceptions\ProfileNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Infrastructure\Http\Requests\CreateCommentRequest;
 
 class CommentController extends Controller
 {
@@ -23,9 +22,6 @@ class CommentController extends Controller
 
     /**
      * Récupère les commentaires d'un profil
-     *
-     * @param int $profileId
-     * @return JsonResponse
      */
     public function index(int $profileId): JsonResponse
     {
@@ -36,23 +32,20 @@ class CommentController extends Controller
                 'success' => true,
                 'message' => 'Commentaires récupérés avec succès',
                 'data' => $comments,
-                'count' => count($comments)
+                'count' => count($comments),
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des commentaires',
-                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne',
             ], 500);
         }
     }
 
     /**
      * Crée un nouveau commentaire
-     *
-     * @param CreateCommentRequest $request
-     * @return JsonResponse
      */
     public function store(CreateCommentRequest $request): JsonResponse
     {
@@ -73,72 +66,65 @@ class CommentController extends Controller
                 'data' => [
                     'id' => $commentId,
                     'administrator_id' => $administratorId,
-                    'profile_id' => $data['profile_id']
-                ]
+                    'profile_id' => $data['profile_id'],
+                ],
             ], 201);
 
         } catch (CommentAlreadyExistsException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Commentaire déjà existant',
-                'error' => 'Vous avez déjà commenté ce profil. Un seul commentaire par profil est autorisé.'
+                'error' => 'Vous avez déjà commenté ce profil. Un seul commentaire par profil est autorisé.',
             ], 409);
 
         } catch (ProfileNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Profil non trouvé',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 404);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la création du commentaire',
-                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne',
             ], 500);
         }
     }
 
     /**
      * Affiche un commentaire spécifique
-     *
-     * @param int $id
-     * @return JsonResponse
      */
     public function show(int $id): JsonResponse
     {
         try {
-            $comment =  $this->commentRepository->findById($id);
+            $comment = $this->commentRepository->findById($id);
 
             if ($comment === null) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Commentaire non trouvé'
+                    'message' => 'Commentaire non trouvé',
                 ], 404);
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Commentaire récupéré avec succès',
-                'data' => $comment
+                'data' => $comment,
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du commentaire',
-                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne',
             ], 500);
         }
     }
 
     /**
      * check si un administrateur peut commenter un profil
-     *
-     * @param Request $request
-     * @param int $profileId
-     * @return JsonResponse
      */
     public function canComment(Request $request, int $profileId): JsonResponse
     {
@@ -156,15 +142,15 @@ class CommentController extends Controller
                 'data' => [
                     'can_comment' => $canComment,
                     'administrator_id' => $administratorId,
-                    'profile_id' => $profileId
-                ]
+                    'profile_id' => $profileId,
+                ],
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la vérification',
-                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne'
+                'error' => (bool) config('app.debug') ? $e->getMessage() : 'Erreur interne',
             ], 500);
         }
     }

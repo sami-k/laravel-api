@@ -24,13 +24,13 @@ class LoginRequest extends FormRequest
                 'required',
                 'string',
                 'email:rfc,dns',
-                'max:255'
+                'max:255',
             ],
             'password' => [
                 'required',
                 'string',
-                'min:6'
-            ]
+                'min:6',
+            ],
         ];
     }
 

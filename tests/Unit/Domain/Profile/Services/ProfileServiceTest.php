@@ -2,21 +2,21 @@
 
 namespace Tests\Unit\Domain\Profile\Services;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Domain\Profile\Services\ProfileService;
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Domain\Profile\Dto\CreateProfileDto;
 use Domain\Profile\Dto\UpdateProfileDto;
-use Domain\Profile\Exceptions\ProfileNotFoundException;
 use Domain\Profile\Exceptions\InvalidImageException;
+use Domain\Profile\Exceptions\ProfileNotFoundException;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
+use Domain\Profile\Services\ProfileService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
+use Tests\TestCase;
 
 class ProfileServiceTest extends TestCase
 {
     private ProfileService $service;
+
     private ProfileRepositoryInterface $repositoryMock;
 
     protected function setUp(): void
@@ -70,7 +70,7 @@ class ProfileServiceTest extends TestCase
 
         // Assert
         $this->assertEquals(1, $result);
-        Storage::disk('public')->assertExists('profiles/' . $image->hashName());
+        Storage::disk('public')->assertExists('profiles/'.$image->hashName());
     }
 
     /** @test */

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Infrastructure\Eloquent\Administrator;
-use Infrastructure\Eloquent\Profile;
 use Infrastructure\Eloquent\Comment;
+use Infrastructure\Eloquent\Profile;
+use Tests\TestCase;
 
 class CommentControllerTest extends TestCase
 {
@@ -24,15 +24,15 @@ class CommentControllerTest extends TestCase
         // Créer 3 commentaires de différents admins pour éviter la contrainte d'unicité
         Comment::factory()->create([
             'profile_id' => $profile->id,
-            'administrator_id' => $admin1->id
+            'administrator_id' => $admin1->id,
         ]);
         Comment::factory()->create([
             'profile_id' => $profile->id,
-            'administrator_id' => $admin2->id
+            'administrator_id' => $admin2->id,
         ]);
         Comment::factory()->create([
             'profile_id' => $profile->id,
-            'administrator_id' => $admin3->id
+            'administrator_id' => $admin3->id,
         ]);
 
         // Act
@@ -42,15 +42,15 @@ class CommentControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'count' => 3
+                'count' => 3,
             ])
             ->assertJsonStructure([
                 'success',
                 'message',
                 'data' => [
-                    '*' => ['id', 'contenu', 'created_at']
+                    '*' => ['id', 'contenu', 'created_at'],
                 ],
-                'count'
+                'count',
             ]);
     }
 
@@ -64,7 +64,7 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson('/api/v1/comments', [
             'profile_id' => $profile->id,
             'contenu' => 'Excellent profil ! Très professionnel.',
@@ -77,8 +77,8 @@ class CommentControllerTest extends TestCase
                 'message' => 'Commentaire créé avec succès',
                 'data' => [
                     'administrator_id' => $administrator->id,
-                    'profile_id' => $profile->id
-                ]
+                    'profile_id' => $profile->id,
+                ],
             ]);
 
         $this->assertDatabaseHas('comments', [
@@ -113,7 +113,7 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson('/api/v1/comments', [
             'profile_id' => 999, // profil inexistant
             'contenu' => 'AB', // trop court
@@ -140,7 +140,7 @@ class CommentControllerTest extends TestCase
 
         // Act - Tenter de créer un second commentaire
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson('/api/v1/comments', [
             'profile_id' => $profile->id,
             'contenu' => 'Deuxième commentaire (interdit)',
@@ -151,7 +151,7 @@ class CommentControllerTest extends TestCase
             ->assertJson([
                 'success' => false,
                 'message' => 'Commentaire déjà existant',
-                'error' => 'Vous avez déjà commenté ce profil. Un seul commentaire par profil est autorisé.'
+                'error' => 'Vous avez déjà commenté ce profil. Un seul commentaire par profil est autorisé.',
             ]);
     }
 
@@ -173,7 +173,7 @@ class CommentControllerTest extends TestCase
 
         // Act - Deuxième admin commente le même profil
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token2,
+            'Authorization' => 'Bearer '.$token2,
         ])->postJson('/api/v1/comments', [
             'profile_id' => $profile->id,
             'contenu' => 'Commentaire du deuxième admin',
@@ -185,8 +185,8 @@ class CommentControllerTest extends TestCase
                 'success' => true,
                 'data' => [
                     'administrator_id' => $admin2->id,
-                    'profile_id' => $profile->id
-                ]
+                    'profile_id' => $profile->id,
+                ],
             ]);
 
         // Vérifier qu'il y a maintenant 2 commentaires sur ce profil
@@ -203,7 +203,7 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("/api/v1/comments/{$comment->id}");
 
         // Assert
@@ -213,7 +213,7 @@ class CommentControllerTest extends TestCase
                 'data' => [
                     'id' => $comment->id,
                     'contenu' => $comment->contenu,
-                ]
+                ],
             ]);
     }
 
@@ -226,14 +226,14 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson('/api/v1/comments/999');
 
         // Assert
         $response->assertStatus(404)
             ->assertJson([
                 'success' => false,
-                'message' => 'Commentaire non trouvé'
+                'message' => 'Commentaire non trouvé',
             ]);
     }
 
@@ -260,7 +260,7 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("/api/v1/comments/can-comment/{$profile->id}");
 
         // Assert
@@ -270,8 +270,8 @@ class CommentControllerTest extends TestCase
                 'data' => [
                     'can_comment' => true,
                     'administrator_id' => $administrator->id,
-                    'profile_id' => $profile->id
-                ]
+                    'profile_id' => $profile->id,
+                ],
             ]);
     }
 
@@ -291,7 +291,7 @@ class CommentControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("/api/v1/comments/can-comment/{$profile->id}");
 
         // Assert
@@ -301,8 +301,8 @@ class CommentControllerTest extends TestCase
                 'data' => [
                     'can_comment' => false,
                     'administrator_id' => $administrator->id,
-                    'profile_id' => $profile->id
-                ]
+                    'profile_id' => $profile->id,
+                ],
             ]);
     }
 }

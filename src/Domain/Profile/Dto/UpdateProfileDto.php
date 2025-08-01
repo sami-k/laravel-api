@@ -30,6 +30,6 @@ readonly class UpdateProfileDto
             'prenom' => $this->prenom,
             'image' => $this->image,
             'statut' => $this->statut,
-        ], fn($value) => $value !== null);
+        ], fn ($value) => $value !== null);
     }
 }

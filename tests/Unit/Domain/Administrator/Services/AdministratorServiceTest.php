@@ -2,23 +2,24 @@
 
 namespace Tests\Unit\Domain\Administrator\Services;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Domain\Administrator\Services\AdministratorService;
-use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
-use Domain\Administrator\Dto\CreateAdministratorDto;
 use Domain\Administrator\Dto\AuthenticateAdministratorDto;
-use Domain\Administrator\Exceptions\InvalidCredentialsException;
+use Domain\Administrator\Dto\CreateAdministratorDto;
 use Domain\Administrator\Exceptions\AdministratorAlreadyExistsException;
-use Infrastructure\Eloquent\Administrator;
+use Domain\Administrator\Exceptions\InvalidCredentialsException;
+use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
+use Domain\Administrator\Services\AdministratorService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Infrastructure\Eloquent\Administrator;
 use Mockery;
+use Tests\TestCase;
 
 class AdministratorServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     private AdministratorService $service;
+
     private AdministratorRepositoryInterface $repositoryMock;
 
     protected function setUp(): void

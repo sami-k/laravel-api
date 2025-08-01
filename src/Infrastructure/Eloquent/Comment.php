@@ -2,10 +2,10 @@
 
 namespace Infrastructure\Eloquent;
 
+use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Database\Factories\CommentFactory;
 
 class Comment extends Model
 {

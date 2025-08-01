@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Infrastructure\Eloquent\Administrator;
 use Illuminate\Support\Facades\Hash;
+use Infrastructure\Eloquent\Administrator;
+use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
@@ -34,17 +34,17 @@ class AuthControllerTest extends TestCase
                 'data' => [
                     'administrator' => ['id', 'name', 'email'],
                     'token',
-                    'token_type'
-                ]
+                    'token_type',
+                ],
             ])
             ->assertJson([
                 'success' => true,
                 'data' => [
                     'token_type' => 'Bearer',
                     'administrator' => [
-                        'email' => 'admin@test.com'
-                    ]
-                ]
+                        'email' => 'admin@test.com',
+                    ],
+                ],
             ]);
 
         $this->assertNotEmpty($response->json('data.token'));
@@ -69,7 +69,7 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(401)
             ->assertJson([
                 'success' => false,
-                'message' => 'Identifiants invalides'
+                'message' => 'Identifiants invalides',
             ]);
     }
 
@@ -86,7 +86,7 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(401)
             ->assertJson([
                 'success' => false,
-                'message' => 'Identifiants invalides'
+                'message' => 'Identifiants invalides',
             ]);
     }
 
@@ -113,7 +113,7 @@ class AuthControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
             'Accept' => 'application/json',
         ])->getJson('/api/v1/auth/me');
 
@@ -125,11 +125,11 @@ class AuthControllerTest extends TestCase
                     'id' => $administrator->id,
                     'name' => $administrator->name,
                     'email' => $administrator->email,
-                ]
+                ],
             ])
             ->assertJsonStructure([
                 'success',
-                'data' => ['id', 'name', 'email', 'created_at']
+                'data' => ['id', 'name', 'email', 'created_at'],
             ]);
     }
 
@@ -152,7 +152,7 @@ class AuthControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
             'Accept' => 'application/json',
         ])->postJson('/api/v1/auth/logout');
 
@@ -160,7 +160,7 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Déconnexion réussie'
+                'message' => 'Déconnexion réussie',
             ]);
 
         // Vérifier que le token est révoqué

@@ -2,12 +2,12 @@
 
 namespace Infrastructure\Eloquent;
 
+use Database\Factories\AdministratorFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Database\Factories\AdministratorFactory;
 
 class Administrator extends Authenticatable
 {
@@ -35,7 +35,7 @@ class Administrator extends Authenticatable
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory() :AdministratorFactory
+    protected static function newFactory(): AdministratorFactory
     {
         return AdministratorFactory::new();
     }

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Infrastructure\Eloquent\Administrator;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Infrastructure\Eloquent\Administrator;
 
 class AdministratorSeeder extends Seeder
 {

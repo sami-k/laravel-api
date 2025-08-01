@@ -149,8 +149,27 @@ curl -X GET http://localhost:8000/api/v1/auth/me \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -H "Accept: application/json"
 ```
+## 📮 Collection Postman
 
-## 📝 Exemples d'utilisation
+Une collection Postman complète est fournie pour tester facilement l'API.
+
+### 📁 Fichiers Postman
+
+```
+postman/
+├── collection.json          # Collection complète avec tous les endpoints
+└── environment.json         # Variables d'environnement (URLs, tokens)
+```
+
+### 🚀 Utilisation rapide
+
+1. **Importer la collection** : `postman/collection.json`
+2. **Importer les variables l'environnement** : `postman/environment.json`
+3. **Démarrer le serveur** : `php artisan serve`
+4. **Exécuter les seeders** : `php artisan db:seed`
+5. **Tester l'authentification** via Postman
+
+## 📝 Exemples d'utilisation en curl
 
 ### Créer un profil
 
@@ -186,6 +205,21 @@ curl -X POST http://localhost:8000/api/v1/comments \
     "profile_id": 1,
     "contenu": "Excellent profil ! Très professionnel."
   }'
+```
+
+## 🔍 Analyse statique (PHPStan)
+
+Pour garantir la qualité et la robustesse de ton code, configure et lance PHPStan :
+
+```bash
+# 1. Commencer par l'analyse générale
+composer analyse
+
+# 3. Analyser le Domain (ultra-strict)
+composer analyse-domain
+
+# 4. Nettoyer les caches si problème
+composer analyse-clear
 ```
 
 ## 🧪 Tests
@@ -278,15 +312,6 @@ Les seeders créent :
 - **Laravel Sanctum** : Authentification API
 - **PHPUnit** : Tests unitaires
 - **Mockery** : Mocking pour les tests
-
-## 🐛 Débogage
-
-### Logs
-
-```bash
-# Voir les logs en temps réel
-tail -f storage/logs/laravel.log
-```
 
 ### Base de données
 

@@ -3,11 +3,11 @@
 namespace Domain\Comment\Services;
 
 use Domain\Comment\Dto\CreateCommentDto;
-use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
 use Domain\Comment\Exceptions\CommentNotFoundException;
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
+use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Domain\Profile\Exceptions\ProfileNotFoundException;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
 
 class CommentService
 {
@@ -22,7 +22,7 @@ class CommentService
     public function create(CreateCommentDto $dto): int
     {
         // Vérification que le profil existe
-        if (!$this->profileRepository->exists($dto->profileId)) {
+        if (! $this->profileRepository->exists($dto->profileId)) {
             throw new ProfileNotFoundException("Profile with ID {$dto->profileId} not found");
         }
 
@@ -46,7 +46,7 @@ class CommentService
     {
         $comment = $this->commentRepository->findById($id);
 
-        if (!$comment) {
+        if (! $comment) {
             throw new CommentNotFoundException("Comment with ID {$id} not found");
         }
 
@@ -58,7 +58,7 @@ class CommentService
      */
     public function canComment(int $administratorId, int $profileId): bool
     {
-        return !$this->commentRepository->hasCommentedProfile($administratorId, $profileId);
+        return ! $this->commentRepository->hasCommentedProfile($administratorId, $profileId);
     }
 
     /**

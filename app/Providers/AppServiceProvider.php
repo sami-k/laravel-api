@@ -2,17 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-
-// Domain Repos Interfaces
 use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
+// Domain Repos Interfaces
 use Domain\Comment\Repositories\CommentRepositoryInterface;
-
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
+use Illuminate\Support\ServiceProvider;
 // Infra Repos
 use Infrastructure\Repositories\EloquentAdministratorRepository;
-use Infrastructure\Repositories\EloquentProfileRepository;
 use Infrastructure\Repositories\EloquentCommentRepository;
+use Infrastructure\Repositories\EloquentProfileRepository;
 
 class AppServiceProvider extends ServiceProvider
 {

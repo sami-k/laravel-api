@@ -4,11 +4,11 @@ namespace Domain\Profile\Services;
 
 use Domain\Profile\Dto\CreateProfileDto;
 use Domain\Profile\Dto\UpdateProfileDto;
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
-use Domain\Profile\Exceptions\ProfileNotFoundException;
 use Domain\Profile\Exceptions\InvalidImageException;
-use Illuminate\Support\Facades\Storage;
+use Domain\Profile\Exceptions\ProfileNotFoundException;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
@@ -71,7 +71,7 @@ class ProfileService
     {
         $profile = $this->repository->findById($id);
 
-        if (!$profile) {
+        if (! $profile) {
             throw new ProfileNotFoundException("Profile with ID {$id} not found");
         }
 
@@ -84,7 +84,7 @@ class ProfileService
     }
 
     /**
-     * Récupère les profils actifs (pour l'endpoint public)
+     * Récupère les profils actifs
      * Filtre le champ 'statut' pour la sécurité
      */
     public function getActiveProfilesForPublic(): array
@@ -95,6 +95,7 @@ class ProfileService
         return array_map(function ($profile) {
             $profileArray = (array) $profile;
             unset($profileArray['statut']);
+
             return $profileArray;
         }, $profiles);
     }
@@ -105,13 +106,13 @@ class ProfileService
     private function handleImageUpload(UploadedFile $image): string
     {
         // Validation de l'image
-        if (!$image->isValid()) {
+        if (! $image->isValid()) {
             throw new InvalidImageException('Invalid image file');
         }
 
         // Validation du type MIME
         $allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-        if (!in_array($image->getMimeType(), $allowedMimes)) {
+        if (! in_array($image->getMimeType(), $allowedMimes)) {
             throw new InvalidImageException('Image must be a valid image file (jpeg, png, jpg, gif)');
         }
 

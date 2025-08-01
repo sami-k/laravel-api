@@ -24,13 +24,13 @@ class CreateCommentRequest extends FormRequest
                 'required',
                 'string',
                 'min:3',
-                'max:1000'
+                'max:1000',
             ],
             'profile_id' => [
                 'required',
                 'integer',
-                'exists:profiles,id'
-            ]
+                'exists:profiles,id',
+            ],
         ];
     }
 

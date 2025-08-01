@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Infrastructure\Eloquent\Profile;
-use Infrastructure\Eloquent\Administrator;
 use Illuminate\Database\Seeder;
+use Infrastructure\Eloquent\Administrator;
+use Infrastructure\Eloquent\Profile;
 
 class ProfileSeeder extends Seeder
 {
@@ -17,6 +17,7 @@ class ProfileSeeder extends Seeder
 
         if ($administrators->isEmpty()) {
             $this->command->error('Aucun administrateur trouvé. Exécutez AdministratorSeeder d\'abord.');
+
             return;
         }
 
@@ -24,21 +25,21 @@ class ProfileSeeder extends Seeder
         Profile::factory(8)
             ->active()
             ->create([
-                'administrator_id' => $administrators->random()->id
+                'administrator_id' => $administrators->random()->id,
             ]);
 
         // Profils en attente
         Profile::factory(5)
             ->pending()
             ->create([
-                'administrator_id' => $administrators->random()->id
+                'administrator_id' => $administrators->random()->id,
             ]);
 
         // Profils inactifs
         Profile::factory(3)
             ->inactive()
             ->create([
-                'administrator_id' => $administrators->random()->id
+                'administrator_id' => $administrators->random()->id,
             ]);
 
         // Profils avec images
@@ -46,7 +47,7 @@ class ProfileSeeder extends Seeder
             ->active()
             ->withImage()
             ->create([
-                'administrator_id' => $administrators->random()->id
+                'administrator_id' => $administrators->random()->id,
             ]);
 
         // Profils spécifiques pour le premier admin
@@ -64,9 +65,9 @@ class ProfileSeeder extends Seeder
         $pendingProfiles = Profile::query()->where('statut', 'en_attente')->getQuery()->count();
         $inactiveProfiles = Profile::query()->where('statut', 'inactif')->getQuery()->count();
 
-        $this->command->info('Total: ' . $totalProfiles . ' profils');
-        $this->command->info('Actifs: ' . $activeProfiles);
-        $this->command->info('En attente: ' . $pendingProfiles);
-        $this->command->info('Inactifs: ' . $inactiveProfiles);
+        $this->command->info('Total: '.$totalProfiles.' profils');
+        $this->command->info('Actifs: '.$activeProfiles);
+        $this->command->info('En attente: '.$pendingProfiles);
+        $this->command->info('Inactifs: '.$inactiveProfiles);
     }
 }

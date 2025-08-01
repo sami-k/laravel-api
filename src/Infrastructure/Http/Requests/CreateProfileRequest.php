@@ -25,30 +25,30 @@ class CreateProfileRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/'
+                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/',
             ],
             'prenom' => [
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/'
+                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/',
             ],
             'image' => [
                 'nullable',
                 'file',
                 'image',
                 'mimes:jpeg,png,jpg,gif',
-                'max:5120' // 5MB max
+                'max:5120', // 5MB max
             ],
             'statut' => [
                 'sometimes',
                 'string',
-                'in:' . implode(',', [
+                'in:'.implode(',', [
                     Profile::STATUT_INACTIF,
                     Profile::STATUT_EN_ATTENTE,
-                    Profile::STATUT_ACTIF
-                ])
-            ]
+                    Profile::STATUT_ACTIF,
+                ]),
+            ],
         ];
     }
 
@@ -77,9 +77,9 @@ class CreateProfileRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Définir le statut par défaut si non fourni
-        if (!$this->has('statut')) {
+        if (! $this->has('statut')) {
             $this->merge([
-                'statut' => Profile::STATUT_EN_ATTENTE
+                'statut' => Profile::STATUT_EN_ATTENTE,
             ]);
         }
     }

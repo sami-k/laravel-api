@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CommentController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -60,11 +59,36 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     });
 });
 
+//
+Route::get('/test-update/{id}', function ($id) {
+    $profile = \Infrastructure\Eloquent\Profile::find($id);
+    if (! $profile) {
+        return response()->json(['error' => 'Profile not found']);
+    }
+
+    $oldData = $profile->toArray();
+
+    $result = $profile->update([
+        'nom' => 'TestNom',
+        'statut' => 'inactif',
+    ]);
+
+    $profile->refresh();
+    $newData = $profile->toArray();
+
+    return response()->json([
+        'success' => $result,
+        'old_data' => $oldData,
+        'new_data' => $newData,
+        'changed' => $oldData !== $newData,
+    ]);
+});
+
 // Route de test pour vérifier l'API
 Route::get('/health', function () {
     return response()->json([
         'status' => 'healthy',
         'timestamp' => now(),
-        'version' => 'v1'
+        'version' => 'v1',
     ]);
 })->name('api.health');

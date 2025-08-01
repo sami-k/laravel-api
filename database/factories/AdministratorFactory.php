@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Infrastructure\Eloquent\Administrator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Infrastructure\Eloquent\Administrator;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Infrastructure\Eloquent\Administrator>

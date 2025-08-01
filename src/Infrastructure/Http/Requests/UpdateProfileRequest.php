@@ -25,30 +25,30 @@ class UpdateProfileRequest extends FormRequest
                 'sometimes',
                 'string',
                 'max:255',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/'
+                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/',
             ],
             'prenom' => [
                 'sometimes',
                 'string',
                 'max:255',
-                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/'
+                'regex:/^[a-zA-ZÀ-ÿ\s\-\']+$/',
             ],
             'image' => [
                 'nullable',
                 'file',
                 'image',
                 'mimes:jpeg,png,jpg,gif',
-                'max:5120' // 5MB max
+                'max:5120', // 5MB max
             ],
             'statut' => [
                 'sometimes',
                 'string',
-                'in:' . implode(',', [
+                'in:'.implode(',', [
                     Profile::STATUT_INACTIF,
                     Profile::STATUT_EN_ATTENTE,
-                    Profile::STATUT_ACTIF
-                ])
-            ]
+                    Profile::STATUT_ACTIF,
+                ]),
+            ],
         ];
     }
 

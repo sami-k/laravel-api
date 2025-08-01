@@ -19,6 +19,7 @@ class CommentSeeder extends Seeder
 
         if ($profiles->isEmpty() || $administrators->isEmpty()) {
             $this->command->error('Aucun profil ou administrateur trouvé. Exécutez les autres seeders d\'abord.');
+
             return;
         }
 
@@ -44,7 +45,7 @@ class CommentSeeder extends Seeder
                     ->getQuery()
                     ->exists();
 
-                if (!$existingComment) {
+                if (! $existingComment) {
                     Comment::factory()
                         ->forAdministratorAndProfile($admin, $profile)
                         ->positive()
@@ -62,14 +63,14 @@ class CommentSeeder extends Seeder
         Comment::factory(3)->long()->create();
 
         $this->command->info('Commentaires créés avec succès !');
-        $this->command->info('Total: ' . Comment::query()->getQuery()->count() . ' commentaires');
-        $this->command->info('Ignorés (doublons): ' . $skippedComments);
+        $this->command->info('Total: '.Comment::query()->getQuery()->count().' commentaires');
+        $this->command->info('Ignorés (doublons): '.$skippedComments);
 
         // ✅ LIGNE 68 - Correction has()->count() avec getQuery()
         $profilesWithComments = Profile::query()
             ->has('comments')
             ->getQuery()
             ->count();
-        $this->command->info('Profils avec commentaires: ' . $profilesWithComments . '/' . $profiles->count());
+        $this->command->info('Profils avec commentaires: '.$profilesWithComments.'/'.$profiles->count());
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Infrastructure\Repositories;
 
-use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
 use Domain\Administrator\Dto\CreateAdministratorDto;
+use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
 use Infrastructure\Eloquent\Administrator;
 
 class EloquentAdministratorRepository implements AdministratorRepositoryInterface

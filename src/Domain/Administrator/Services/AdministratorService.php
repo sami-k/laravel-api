@@ -2,11 +2,11 @@
 
 namespace Domain\Administrator\Services;
 
-use Domain\Administrator\Dto\CreateAdministratorDto;
 use Domain\Administrator\Dto\AuthenticateAdministratorDto;
-use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
-use Domain\Administrator\Exceptions\InvalidCredentialsException;
+use Domain\Administrator\Dto\CreateAdministratorDto;
 use Domain\Administrator\Exceptions\AdministratorAlreadyExistsException;
+use Domain\Administrator\Exceptions\InvalidCredentialsException;
+use Domain\Administrator\Repositories\AdministratorRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 
 class AdministratorService
@@ -22,7 +22,7 @@ class AdministratorService
     {
         $administrator = $this->repository->findByEmail($dto->email);
 
-        if (!$administrator || !Hash::check($dto->password, $administrator->password)) {
+        if (! $administrator || ! Hash::check($dto->password, $administrator->password)) {
             throw new InvalidCredentialsException('Invalid email or password');
         }
 
@@ -74,6 +74,7 @@ class AdministratorService
     public function logout(object $administrator): bool
     {
         $administrator->tokens()->delete();
+
         return true;
     }
 }

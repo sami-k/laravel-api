@@ -2,9 +2,9 @@
 
 namespace Infrastructure\Repositories;
 
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Domain\Profile\Dto\CreateProfileDto;
 use Domain\Profile\Dto\UpdateProfileDto;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Infrastructure\Eloquent\Profile;
 
 class EloquentProfileRepository implements ProfileRepositoryInterface

@@ -2,8 +2,8 @@
 
 namespace Infrastructure\Repositories;
 
-use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Domain\Comment\Dto\CreateCommentDto;
+use Domain\Comment\Repositories\CommentRepositoryInterface;
 use Infrastructure\Eloquent\Comment;
 
 class EloquentCommentRepository implements CommentRepositoryInterface
@@ -22,6 +22,7 @@ class EloquentCommentRepository implements CommentRepositoryInterface
     public function create(CreateCommentDto $dto): int
     {
         $comment = Comment::query()->create($dto->toArray());
+
         return $comment->id;
     }
 

@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Infrastructure\Eloquent\Administrator;
-use Infrastructure\Eloquent\Profile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Infrastructure\Eloquent\Administrator;
+use Infrastructure\Eloquent\Profile;
+use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase
 {
@@ -32,15 +32,15 @@ class ProfileControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'count' => 2 // Seulement les profils actifs
+                'count' => 2, // Seulement les profils actifs
             ])
             ->assertJsonStructure([
                 'success',
                 'message',
                 'data' => [
-                    '*' => ['id', 'nom', 'prenom', 'image'] // Pas de statut
+                    '*' => ['id', 'nom', 'prenom', 'image'], // Pas de statut
                 ],
-                'count'
+                'count',
             ]);
 
         // Vérifier qu'aucun profil ne contient le champ 'statut'
@@ -61,7 +61,7 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
             'Accept' => 'application/json',
         ])->postJson('/api/v1/profiles', [
             'nom' => 'Dupont',
@@ -75,13 +75,13 @@ class ProfileControllerTest extends TestCase
                 'success' => true,
                 'message' => 'Profil créé avec succès',
                 'data' => [
-                    'administrator_id' => $administrator->id
-                ]
+                    'administrator_id' => $administrator->id,
+                ],
             ])
             ->assertJsonStructure([
                 'success',
                 'message',
-                'data' => ['id', 'administrator_id']
+                'data' => ['id', 'administrator_id'],
             ]);
 
         $this->assertDatabaseHas('profiles', [
@@ -104,7 +104,7 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
             'Accept' => 'application/json',
         ])->postJson('/api/v1/profiles', [
             'nom' => 'Dupont',
@@ -145,7 +145,7 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson('/api/v1/profiles', [
             'nom' => '', // requis
             'prenom' => '', // requis
@@ -167,7 +167,7 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("/api/v1/profiles/{$profile->id}");
 
         // Assert
@@ -179,7 +179,7 @@ class ProfileControllerTest extends TestCase
                     'nom' => $profile->nom,
                     'prenom' => $profile->prenom,
                     'statut' => $profile->statut, // Visible pour les admins
-                ]
+                ],
             ]);
     }
 
@@ -192,14 +192,14 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson('/api/v1/profiles/999');
 
         // Assert
         $response->assertStatus(404)
             ->assertJson([
                 'success' => false,
-                'message' => 'Profil non trouvé'
+                'message' => 'Profil non trouvé',
             ]);
     }
 
@@ -213,7 +213,7 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->putJson("/api/v1/profiles/{$profile->id}", [
             'nom' => 'Martin',
             'statut' => 'inactif',
@@ -223,7 +223,7 @@ class ProfileControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Profil mis à jour avec succès'
+                'message' => 'Profil mis à jour avec succès',
             ]);
 
         $this->assertDatabaseHas('profiles', [
@@ -243,14 +243,14 @@ class ProfileControllerTest extends TestCase
 
         // Act
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->deleteJson("/api/v1/profiles/{$profile->id}");
 
         // Assert
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Profil supprimé avec succès'
+                'message' => 'Profil supprimé avec succès',
             ]);
 
         $this->assertDatabaseMissing('profiles', [

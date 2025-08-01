@@ -1,0 +1,845 @@
+{
+	"info": {
+		"_postman_id": "laravel-challenge-api",
+		"name": "Laravel Challenge API",
+		"description": "Collection Postman complète pour tester l'API Laravel Challenge avec architecture DDD.\n\n**Base URL**: http://localhost:8000/api/v1\n\n**Authentification**: Bearer Token (Laravel Sanctum)\n\n**Comptes de test disponibles:**\n- admin@test.com / password123\n- demo@laravel-challenge.com / demo123\n\n**Structure:**\n1. 🔐 Authentification\n2. 👥 Profils (Public + Protégé)\n3. 💬 Commentaires\n4. 🔧 Utilitaires",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentification",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data.token) {",
+									"        pm.environment.set('bearer_token', response.data.token);",
+									"        pm.environment.set('admin_id', response.data.administrator.id);",
+									"        pm.environment.set('admin_email', response.data.administrator.email);",
+									"        console.log('Token saved: ' + response.data.token.substring(0, 20) + '...');",
+									"    }",
+									"}",
+									"",
+									"pm.test('Status code is 200', () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has token', () => {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.data.token).to.not.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Authentifie un administrateur et récupère le token Bearer.\n\n**Comptes disponibles:**\n- admin@test.com / password123\n- demo@laravel-challenge.com / demo123\n\n**Le token est automatiquement sauvegardé dans l'environnement.**"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"password123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": ["{{base_url}}"],
+									"path": ["auth", "login"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"message\": \"Authentification réussie\",\n    \"data\": {\n        \"administrator\": {\n            \"id\": 1,\n            \"name\": \"Admin Principal\",\n            \"email\": \"admin@test.com\"\n        },\n        \"token\": \"1|abcdef123456...\",\n        \"token_type\": \"Bearer\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User Info (Me)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "me"]
+						},
+						"description": "Récupère les informations de l'administrateur connecté."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/auth/me",
+									"host": ["{{base_url}}"],
+									"path": ["auth", "me"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Admin Principal\",\n        \"email\": \"admin@test.com\",\n        \"created_at\": \"2024-01-15T10:30:00.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.environment.unset('bearer_token');",
+									"    pm.environment.unset('admin_id');",
+									"    pm.environment.unset('admin_email');",
+									"    console.log('Token removed from environment');",
+									"}",
+									"",
+									"pm.test('Status code is 200', () => {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Déconnecte l'administrateur et révoque tous ses tokens."
+					}
+				}
+			],
+			"description": "Endpoints d'authentification utilisant Laravel Sanctum"
+		},
+		{
+			"name": "👥 Profils",
+			"item": [
+				{
+					"name": "📖 Public",
+					"item": [
+						{
+							"name": "Get Active Profiles (Public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', () => {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response structure is correct', () => {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response).to.have.property('success', true);",
+											"    pm.expect(response).to.have.property('data');",
+											"    pm.expect(response).to.have.property('count');",
+											"});",
+											"",
+											"pm.test('Profiles do not contain status field', () => {",
+											"    const response = pm.response.json();",
+											"    if (response.data && response.data.length > 0) {",
+											"        response.data.forEach(profile => {",
+											"            pm.expect(profile).to.not.have.property('statut');",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/profiles",
+									"host": ["{{base_url}}"],
+									"path": ["profiles"]
+								},
+								"description": "**Endpoint PUBLIC** - Récupère tous les profils avec le statut 'actif'.\n\n⚠️ **Important:** Le champ 'statut' est filtré pour des raisons de sécurité.\n\n**Pas d'authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/profiles",
+											"host": ["{{base_url}}"],
+											"path": ["profiles"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"body": "{\n    \"success\": true,\n    \"message\": \"Profils actifs récupérés avec succès\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"nom\": \"Dupont\",\n            \"prenom\": \"Jean\",\n            \"image\": \"profiles/photo1.jpg\",\n            \"administrator_id\": 1,\n            \"created_at\": \"2024-01-15T10:30:00.000000Z\",\n            \"updated_at\": \"2024-01-15T10:30:00.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"nom\": \"Martin\",\n            \"prenom\": \"Sophie\",\n            \"image\": null,\n            \"administrator_id\": 2,\n            \"created_at\": \"2024-01-15T11:00:00.000000Z\",\n            \"updated_at\": \"2024-01-15T11:00:00.000000Z\"\n        }\n    ],\n    \"count\": 2\n}"
+								}
+							]
+						}
+					],
+					"description": "Endpoints publics accessibles sans authentification"
+				},
+				{
+					"name": "🔒 Protégé",
+					"item": [
+						{
+							"name": "Create Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"if (pm.response.code === 201) {",
+											"    const response = pm.response.json();",
+											"    if (response.data && response.data.id) {",
+											"        pm.environment.set('last_profile_id', response.data.id);",
+											"        console.log('Profile ID saved: ' + response.data.id);",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Nouveau",
+											"type": "text"
+										},
+										{
+											"key": "prenom",
+											"value": "Profil",
+											"type": "text"
+										},
+										{
+											"key": "statut",
+											"value": "actif",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/profiles",
+									"host": ["{{base_url}}"],
+									"path": ["profiles"]
+								},
+								"description": "Crée un nouveau profil. L'administrateur connecté devient propriétaire.\n\n**Champs requis:**\n- nom (string)\n- prenom (string)\n- statut (inactif|en_attente|actif)\n\n**Champs optionnels:**\n- image (file: jpeg, png, jpg, gif - max 5MB)\n\n**Authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "nom",
+													"value": "Nouveau",
+													"type": "text"
+												},
+												{
+													"key": "prenom",
+													"value": "Profil",
+													"type": "text"
+												},
+												{
+													"key": "statut",
+													"value": "actif",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{base_url}}/profiles",
+											"host": ["{{base_url}}"],
+											"path": ["profiles"]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"body": "{\n    \"success\": true,\n    \"message\": \"Profil créé avec succès\",\n    \"data\": {\n        \"id\": 15,\n        \"administrator_id\": 1\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Profile by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/profiles/{{last_profile_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["profiles", "{{last_profile_id}}"]
+								},
+								"description": "Récupère un profil spécifique par son ID.\n\n**Pour les administrateurs connectés:**\n- Accès à tous les champs (y compris 'statut')\n- Tous les profils accessibles\n\n**Authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/profiles/1",
+											"host": ["{{base_url}}"],
+											"path": ["profiles", "1"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"body": "{\n    \"success\": true,\n    \"message\": \"Profil récupéré avec succès\",\n    \"data\": {\n        \"id\": 1,\n        \"nom\": \"Dupont\",\n        \"prenom\": \"Jean\",\n        \"image\": \"profiles/photo1.jpg\",\n        \"statut\": \"actif\",\n        \"administrator_id\": 1,\n        \"created_at\": \"2024-01-15T10:30:00.000000Z\",\n        \"updated_at\": \"2024-01-15T10:30:00.000000Z\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Dupont Modifié",
+											"type": "text"
+										},
+										{
+											"key": "statut",
+											"value": "en_attente",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/profiles/{{last_profile_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["profiles", "{{last_profile_id}}"]
+								},
+								"description": "Met à jour un profil existant.\n\n**Champs modifiables:**\n- nom (optionnel)\n- prenom (optionnel)\n- statut (optionnel: inactif|en_attente|actif)\n- image (optionnel: remplace l'ancienne)\n\n**Seuls les champs fournis sont mis à jour**\n\n**Authentification requise**"
+							}
+						},
+						{
+							"name": "Delete Profile",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/profiles/{{last_profile_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["profiles", "{{last_profile_id}}"]
+								},
+								"description": "Supprime un profil et son image associée.\n\n**L'image est automatiquement supprimée du stockage**\n\n**Authentification requise**"
+							}
+						}
+					],
+					"description": "Endpoints protégés par authentification Bearer"
+				}
+			],
+			"description": "Gestion des profils utilisateur"
+		},
+		{
+			"name": "💬 Commentaires",
+			"item": [
+				{
+					"name": "📖 Public",
+					"item": [
+						{
+							"name": "Get Comments by Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/profiles/1/comments",
+									"host": ["{{base_url}}"],
+									"path": ["profiles", "1", "comments"]
+								},
+								"description": "**Endpoint PUBLIC** - Récupère tous les commentaires d'un profil.\n\n**Pas d'authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/profiles/1/comments",
+											"host": ["{{base_url}}"],
+											"path": ["profiles", "1", "comments"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"body": "{\n    \"success\": true,\n    \"message\": \"Commentaires récupérés avec succès\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"contenu\": \"Excellent profil ! Très professionnel.\",\n            \"administrator_id\": 2,\n            \"profile_id\": 1,\n            \"created_at\": \"2024-01-15T12:00:00.000000Z\",\n            \"updated_at\": \"2024-01-15T12:00:00.000000Z\"\n        }\n    ],\n    \"count\": 1\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "🔒 Protégé",
+					"item": [
+						{
+							"name": "Create Comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 201', () => {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"if (pm.response.code === 201) {",
+											"    const response = pm.response.json();",
+											"    if (response.data && response.data.id) {",
+											"        pm.environment.set('last_comment_id', response.data.id);",
+											"        console.log('Comment ID saved: ' + response.data.id);",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"profile_id\": 1,\n    \"contenu\": \"Excellent profil ! Je recommande vivement cette personne pour ses compétences techniques.\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/comments",
+									"host": ["{{base_url}}"],
+									"path": ["comments"]
+								},
+								"description": "Crée un nouveau commentaire sur un profil.\n\n**Règle métier importante:**\n🚫 **Un administrateur ne peut poster qu'UN SEUL commentaire par profil**\n\n**Champs requis:**\n- profile_id (integer, profil existant)\n- contenu (string, 3-1000 caractères)\n\n**L'administrator_id est automatiquement défini**\n\n**Authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"profile_id\": 1,\n    \"contenu\": \"Excellent profil !\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/comments",
+											"host": ["{{base_url}}"],
+											"path": ["comments"]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"body": "{\n    \"success\": true,\n    \"message\": \"Commentaire créé avec succès\",\n    \"data\": {\n        \"id\": 10,\n        \"administrator_id\": 1,\n        \"profile_id\": 1\n    }\n}"
+								},
+								{
+									"name": "Duplicate Comment (409)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"profile_id\": 1,\n    \"contenu\": \"Deuxième commentaire\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/comments",
+											"host": ["{{base_url}}"],
+											"path": ["comments"]
+										}
+									},
+									"status": "Conflict",
+									"code": 409,
+									"body": "{\n    \"success\": false,\n    \"message\": \"Commentaire déjà existant\",\n    \"error\": \"Vous avez déjà commenté ce profil. Un seul commentaire par profil est autorisé.\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Comment by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/comments/{{last_comment_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["comments", "{{last_comment_id}}"]
+								},
+								"description": "Récupère un commentaire spécifique par son ID.\n\n**Authentification requise**"
+							}
+						},
+						{
+							"name": "Can Comment Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{bearer_token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/comments/can-comment/1",
+									"host": ["{{base_url}}"],
+									"path": ["comments", "can-comment", "1"]
+								},
+								"description": "Vérifie si l'administrateur connecté peut commenter un profil.\n\n**Retourne:**\n- can_comment: true/false\n- administrator_id: ID de l'admin\n- profile_id: ID du profil\n\n**Authentification requise**"
+							},
+							"response": [
+								{
+									"name": "Can Comment",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/comments/can-comment/2",
+											"host": ["{{base_url}}"],
+											"path": ["comments", "can-comment", "2"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"can_comment\": true,\n        \"administrator_id\": 1,\n        \"profile_id\": 2\n    }\n}"
+								},
+								{
+									"name": "Cannot Comment",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{bearer_token}}"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/comments/can-comment/1",
+											"host": ["{{base_url}}"],
+											"path": ["comments", "can-comment", "1"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"can_comment\": false,\n        \"administrator_id\": 1,\n        \"profile_id\": 1\n    }\n}"
+								}
+							]
+						}
+					]
+				}
+			],
+			"description": "Gestion des commentaires sur les profils"
+		},
+		{
+			"name": "🔧 Utilitaires",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Vérifie que l'API fonctionne correctement.\n\n**Endpoint public de diagnostic**"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health",
+									"host": ["{{base_url}}"],
+									"path": ["health"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"status\": \"healthy\",\n    \"timestamp\": \"2024-01-15T15:30:00.000000Z\",\n    \"version\": \"v1\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Endpoints utilitaires et de diagnostic"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-setup pour les variables d'environnement",
+					"if (!pm.environment.get('base_url')) {",
+					"    pm.environment.set('base_url', 'http://localhost:8000/api/v1');",
+					"    console.log('Base URL set to: http://localhost:8000/api/v1');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Tests globaux pour toutes les requêtes",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"pm.test('Response has JSON content-type', function () {",
+					"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+					"});",
+					"",
+					"// Log des erreurs pour debug",
+					"if (pm.response.code >= 400) {",
+					"    console.log('❌ Error Response:', pm.response.text());",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "bearer_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "last_profile_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "last_comment_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer_token}}",
+				"type": "string"
+			}
+		]
+	}
+}

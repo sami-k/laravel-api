@@ -18,6 +18,7 @@ class GetActiveProfilesAction
      * Filtre le champ 'statut' pour la sécurité
      *
      * @return array<int, array<string, mixed>>
+     *
      * @throws \RuntimeException
      */
     public function execute(): array
@@ -26,7 +27,7 @@ class GetActiveProfilesAction
             return $this->profileService->getActiveProfilesForPublic();
 
         } catch (\Exception $e) {
-            throw new \RuntimeException('Failed to retrieve active profiles: ' . $e->getMessage());
+            throw new \RuntimeException('Failed to retrieve active profiles: '.$e->getMessage());
         }
     }
 }

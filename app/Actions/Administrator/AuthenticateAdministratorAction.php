@@ -3,8 +3,8 @@
 namespace App\Actions\Administrator;
 
 use Domain\Administrator\Dto\AuthenticateAdministratorDto;
-use Domain\Administrator\Services\AdministratorService;
 use Domain\Administrator\Exceptions\InvalidCredentialsException;
+use Domain\Administrator\Services\AdministratorService;
 
 /**
  * Action d'authentification d'un administrateur
@@ -19,8 +19,9 @@ class AuthenticateAdministratorAction
     /**
      * Execute l'authentification d'un admin
      *
-     * @param array<string, string> $credentials
+     * @param  array<string, string>  $credentials
      * @return array<string, mixed>
+     *
      * @throws InvalidCredentialsException
      * @throws \RuntimeException
      */
@@ -34,7 +35,7 @@ class AuthenticateAdministratorAction
         } catch (InvalidCredentialsException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new \RuntimeException('Authentication failed: ' . $e->getMessage());
+            throw new \RuntimeException('Authentication failed: '.$e->getMessage());
         }
     }
 }

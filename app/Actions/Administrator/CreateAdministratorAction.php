@@ -3,8 +3,8 @@
 namespace App\Actions\Administrator;
 
 use Domain\Administrator\Dto\CreateAdministratorDto;
-use Domain\Administrator\Services\AdministratorService;
 use Domain\Administrator\Exceptions\AdministratorAlreadyExistsException;
+use Domain\Administrator\Services\AdministratorService;
 
 /**
  * Action de création d'un administrateur
@@ -18,7 +18,8 @@ class CreateAdministratorAction
     /**
      * Execute la création d'un administrateur
      *
-     * @param array<string, string> $data
+     * @param  array<string, string>  $data
+     *
      * @throws AdministratorAlreadyExistsException
      * @throws \RuntimeException
      */
@@ -32,7 +33,7 @@ class CreateAdministratorAction
         } catch (AdministratorAlreadyExistsException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new \RuntimeException('Administrator creation failed: ' . $e->getMessage());
+            throw new \RuntimeException('Administrator creation failed: '.$e->getMessage());
         }
     }
 }

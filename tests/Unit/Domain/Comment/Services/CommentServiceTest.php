@@ -2,21 +2,23 @@
 
 namespace Tests\Unit\Domain\Comment\Services;
 
-use Tests\TestCase;
-use Domain\Comment\Services\CommentService;
-use Domain\Comment\Repositories\CommentRepositoryInterface;
-use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use Domain\Comment\Dto\CreateCommentDto;
 use Domain\Comment\Exceptions\CommentAlreadyExistsException;
 use Domain\Comment\Exceptions\CommentNotFoundException;
+use Domain\Comment\Repositories\CommentRepositoryInterface;
+use Domain\Comment\Services\CommentService;
 use Domain\Profile\Exceptions\ProfileNotFoundException;
+use Domain\Profile\Repositories\ProfileRepositoryInterface;
 use InvalidArgumentException;
 use Mockery;
+use Tests\TestCase;
 
 class CommentServiceTest extends TestCase
 {
     private CommentService $service;
+
     private CommentRepositoryInterface $commentRepositoryMock;
+
     private ProfileRepositoryInterface $profileRepositoryMock;
 
     protected function setUp(): void

@@ -7,9 +7,7 @@ readonly class AuthenticateAdministratorDto
     public function __construct(
         public string $email,
         public string $password,
-    )
-    {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

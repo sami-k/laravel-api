@@ -65,7 +65,6 @@
         "analyse": "phpstan analyse --memory-limit=2G",
         "analyse-domain": "phpstan analyse --configuration=phpstan-domain.neon --memory-limit=2G",
         "analyse-quick": "phpstan analyse --level=4 --memory-limit=1G",
-        "analyse-baseline": "phpstan analyse --generate-baseline --memory-limit=2G",
         "analyse-clear": "phpstan clear-result-cache",
         "analyse-ci": "phpstan analyse --no-progress --error-format=checkstyle --memory-limit=2G",
         "format": "pint",

@@ -12,9 +12,7 @@ parameters:
     paths:
         - src/Domain/
 
-    # Domain = zéro tolérance (comme ton approche stricte)
-    checkMissingIterableValueType: true
-    checkGenericClassInNonGenericObjectType: true
+    # Domain = stricte
     reportUnmatchedIgnoredErrors: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkUninitializedProperties: true
